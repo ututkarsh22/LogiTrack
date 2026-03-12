@@ -14,7 +14,7 @@ export const registerUser = async (req,res)=>{
         
         if(password !== confirmPassword)
         {
-            res.status(402).json({
+            return res.status(402).json({
                 success : false,
                 message : "Password are not same"
             })
@@ -23,7 +23,7 @@ export const registerUser = async (req,res)=>{
 
         if(existing)
         {
-            res.status(400).json({
+            return res.status(400).json({
                 success : false,
                 message : "User already exist"
             })
@@ -81,7 +81,7 @@ export const loginUser = async(req, res) => {
      }
  
      const hashedPassword = await bcrypt.compare(password, exist.password);
- 
+
      if(!hashedPassword)
      {
          return res.status(400).json({
@@ -91,7 +91,7 @@ export const loginUser = async(req, res) => {
      }
  
      const token = jwt.sign(
-         {id: exist._id,id: exist.role},
+         {id: exist._id,role: exist.role},
          process.env.JWT_SECRET,
          {expiresIn:"3d"}
  );
@@ -114,7 +114,7 @@ export const loginUser = async(req, res) => {
  } catch (error) {
     res.status(501).json({
         success : false,
-        message : error.message
+        message : `error from login ${error.message}`
     })
  }
 

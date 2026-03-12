@@ -20,6 +20,14 @@ const userSchema = new mongoose.Schema({
         type:String,
         enum:["customer","agent","admin"],
         default:"customer"
+    },
+    location : {
+        lat :Number,
+        lng : Number
+    },
+    isAvailable: {
+        type : Boolean,
+        default : true
     }
 
 },{timestamps:true});
