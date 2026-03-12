@@ -22,6 +22,9 @@ const orderSchema = new mongoose.Schema({
         lng:Number
     },
 
+    packageDetails : {
+        type : String
+    },
     status:{
         type:String,
         enum:["pending","assigned","picked","delivered"],

@@ -27,3 +27,16 @@ export const verifyToken = (req , res , next) => {
         })
     }
 }
+
+export const verifyAdmin = (req, res, next) => {
+
+    if(req.user.email !== process.env.ADMIN)
+    {
+        return res.status(400).json({
+            success : false,
+            message : "Access denied"
+        })
+    }
+
+        next();
+}
