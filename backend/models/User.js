@@ -13,21 +13,14 @@ const userSchema = new mongoose.Schema({
 
     password:{
         type:String,
-        required:true
+        required:true,
+        minimum : 6
     },
 
     role:{
         type:String,
         enum:["customer","agent","admin"],
         default:"customer"
-    },
-    location : {
-        lat :Number,
-        lng : Number
-    },
-    isAvailable: {
-        type : Boolean,
-        default : true
     }
 
 },{timestamps:true});

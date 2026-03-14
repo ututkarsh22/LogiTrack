@@ -1,6 +1,8 @@
 import Orders from "../models/Order.js";
 import { getDistance } from "../utils/distance.js";
 import User from "../models/User.js"
+import { getCoordinates } from "../utils/getCordinates.js";
+import AgentModel from "../models/Agent.model.js";
 export const getOrders = async (req, res) => {
   try {
     const order = await Orders.find({ customer: req.user.id });
@@ -36,37 +38,49 @@ export const createOrder = async (req, res) => {
       });
     }
 
-    const agents = await User.find({
-      role: "agent",
+    const pickup = await getCoordinates(pickupLocation);
+    const drop = await getCoordinates(dropLocation);
+
+    const agents = await AgentModel.find({
       isAvailable: true,
-    });
+    }).populate("user");
      
-    console.log("agent hu main",agents);
+   
     let assignedAgent = null;
 
     for (let agent of agents) {
+      
+     
       const distance = getDistance(
-        pickupLocation.lat,
-        pickupLocation.lng,
+        pickup.lat,
+        pickup.lng,
         agent.location.lat,
         agent.location.lng,
+
       );
       console.log("distance", distance)
       if (distance <= 20) {
-        assignedAgent = agent._id;
+        assignedAgent = agent;
+        assignedAgent.isAvailable = false;
         break;
       }
     }
 
-    const order = await Orders.create({
-      customer: req.user.id,
-      agent: assignedAgent,
-      pickupLocation,
-      dropLocation,
-      packageDetails,
-      status: assignedAgent ? "assigned" : "pending",
+   const order = await Orders.create({
+       customer: req.user.id,
+       agent: assignedAgent,
+       pickupLocation : pickup,
+       dropLocation : drop,
+       packageDetails,
+       status: assignedAgent ? "assigned" : "pending",
     });
+    
+     if(assignedAgent !== null){
 
+         assignedAgent.orderId = order._id
+         assignedAgent.save();
+     }
+    
     res.status(200).json({
       success: true,
       message: "Order created Successfully",

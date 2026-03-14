@@ -1,23 +1,29 @@
 import User from "../models/User.js";
 import Order from "../models/Order.js";
 import { getDistance } from "../utils/distance.js";
+import { getCoordinates } from "../utils/getCordinates.js";
+import AgentModel from "../models/Agent.model.js";
 
 export const agentLocation = async (req, res) => {
   try {
-    const { lat, lng } = req.body;
-    if (!lat || !lng) {
+    const { location } = req.body;
+    if (!location) {
       return res.status(401).json({
         sucess: false,
         message: "Provide Location details",
       });
     }
 
-    const agent = await User.findByIdAndUpdate(
-      req.user.id,
-      { location: { lat, lng } },
+    const agentLocation = await getCoordinates(location);
+   
+
+    const agent = await AgentModel.findOneAndUpdate(
+      {user : req.user.id},
+      { location: agentLocation },
       { new: true },
     );
 
+    console.log("agent hu" ,agent)
     const pendingOrders = await Order.find({
       status: "pending",
     });
@@ -28,16 +34,19 @@ export const agentLocation = async (req, res) => {
       const distance = getDistance(
         order.pickupLocation.lat,
         order.pickupLocation.lng,
-        lat,
-        lng,
+        agentLocation.lat,
+        agentLocation.lng
       );
 
-      if (distance <= 15) {
+      if (distance <= 20 && agent.isAvailable === true) {
        
 
         order.agent = agent._id;
         order.status = "assigned";
-
+        agent.isAvailable = false,
+        agent.orderId = order._id
+        
+        await agent.save();
         await order.save();
 
         assignedOrder = order;

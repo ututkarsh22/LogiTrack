@@ -1,6 +1,7 @@
 import User from "../models/User.js";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
+import AgentModel from "../models/Agent.model.js";
 
 export const registerUser = async (req,res)=>{
 
@@ -37,7 +38,13 @@ export const registerUser = async (req,res)=>{
             role
         });
 
-        
+        if(role === "agent")
+        {
+            const agent = await AgentModel.create({
+                user : user._id
+            })
+        }
+
         res.status(201).json({
             success : true,
             message : "User registerd Successfully",
