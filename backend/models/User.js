@@ -19,10 +19,10 @@ const userSchema = new mongoose.Schema({
 
     role:{
         type:String,
-        enum:["customer","agent","admin"],
+        enum:["customer","agent"],
         default:"customer"
     }
-
+    
 },{timestamps:true});
 
 export default mongoose.model("User",userSchema);

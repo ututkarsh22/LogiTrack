@@ -3,6 +3,7 @@ import { getDistance } from "../utils/distance.js";
 import User from "../models/User.js"
 import { getCoordinates } from "../utils/getCordinates.js";
 import AgentModel from "../models/Agent.model.js";
+
 export const getOrders = async (req, res) => {
   try {
     const order = await Orders.find({ customer: req.user.id });
@@ -16,7 +17,7 @@ export const getOrders = async (req, res) => {
 
     res.status(201).json({
       success: true,
-      message: "Fetched all Orders",
+      message: "Fetched all Orders of this customer",
       order,
     });
   } catch (error) {
@@ -66,12 +67,17 @@ export const createOrder = async (req, res) => {
       }
     }
 
+    const otpPick = Math.floor(1000 + Math.random() * 9000);
+    const otpDrop = Math.floor(1000 + Math.random() * 9000);
+
    const order = await Orders.create({
        customer: req.user.id,
        agent: assignedAgent,
        pickupLocation : pickup,
        dropLocation : drop,
        packageDetails,
+       pickupOtp : otpPick,
+       deliverOtp : otpDrop,
        status: assignedAgent ? "assigned" : "pending",
     });
     
@@ -93,3 +99,27 @@ export const createOrder = async (req, res) => {
     });
   }
 };
+
+export const viewOrder = async(req,res) =>{
+  try {
+    const {id} = req.params;
+    const details = await Orders.findById(id).select("+pickupOtp +deliverOtp");
+
+    if(!details){
+     return  res.status(401).json({
+        message : "order does not exist",
+        success : false
+      })
+    }
+    res.status(201).json({
+      success : true,
+      message : "Order ID fetched",
+      details
+    })
+  } catch (error) {
+    res.status(501).json({
+      message : error.message,
+      status : false
+    })
+  }
+}

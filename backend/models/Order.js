@@ -29,7 +29,15 @@ const orderSchema = new mongoose.Schema({
         type:String,
         enum:["pending","assigned","picked","delivered"],
         default:"pending"
-    }
+    },
+    pickupOtp : {
+            type : String,
+            select : false,
+        },
+    deliverOtp: {
+            type : String,
+            select : false
+        }
 
 },{timestamps:true});
 
