@@ -37,15 +37,17 @@ User Login / Register
 OTP Verification
 
 ## Future Improvements
-Redis caching for faster tracking requests
+Redis caching for faster tracking requests 
 Real-time updates using events or sockets
 Better scalability for handling high traffic
 
 ## Run Locally
+```
 git clone https://github.com/ututkarsh22/LogiTrack.git
 cd logitrack
 npm install
 npm start
+```
 
 ## Note
 This project is currently in progress and focused on improving backend scalability and performance.
