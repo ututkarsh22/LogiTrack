@@ -1,7 +1,10 @@
 import express from 'express';
-import { agentLocation, getOrder } from '../controllers/agentControllers.js';
-import { verifyToken } from '../middleware/auth.middleware.js';
+import { agentLocation, getOrder, verifyPickupOtp, verifyDeliveryOtp, getAgentStatus } from '../controllers/agentControllers.js';
+import { verifyToken, requireRole } from '../middleware/auth.middleware.js';
 const router = express.Router();
-router.post('/location' ,verifyToken, agentLocation);
-router.get('/getOrder/:id',verifyToken,getOrder)
+router.post('/location', verifyToken, requireRole('agent'), agentLocation);
+router.get('/status', verifyToken, requireRole('agent'), getAgentStatus);
+router.get('/getOrder/:id', verifyToken, requireRole('agent'), getOrder);
+router.post('/verify-pickup-otp', verifyToken, requireRole('agent'), verifyPickupOtp);
+router.post('/verify-delivery-otp', verifyToken, requireRole('agent'), verifyDeliveryOtp);
 export default router;

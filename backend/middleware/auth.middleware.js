@@ -11,30 +11,41 @@ export const verifyToken = (req , res , next) => {
         });
     }
 
-
     const decode = jwt.verify(token,process.env.JWT_SECRET);
 
     req.user = decode;
-    console.log(req.user);
 
     next();
     }
     catch(error){
 
-        return res.status(501).json({
+        return res.status(500).json({
             success:false,
             message : error.message
         })
     }
 }
 
+// Role-based authorization middleware
+export const requireRole = (...roles) => {
+    return (req, res, next) => {
+        if (!req.user || !roles.includes(req.user.role)) {
+            return res.status(403).json({
+                success: false,
+                message: "Access denied. Insufficient permissions."
+            });
+        }
+        next();
+    };
+};
+
 export const verifyAdmin = (req, res, next) => {
 
-    if(req.user.email !== process.env.ADMIN)
+    if(req.user.role !== "admin")
     {
-        return res.status(400).json({
+        return res.status(403).json({
             success : false,
-            message : "Access denied"
+            message : "Access denied. Admin only."
         })
     }
 

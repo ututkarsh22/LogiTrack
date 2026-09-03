@@ -9,25 +9,27 @@ const orderSchema = new mongoose.Schema({
 
     agent:{
         type:mongoose.Schema.Types.ObjectId,
-        ref:"User"
+        ref:"Agent"
     },
 
     pickupLocation:{
         lat:Number,
         lng:Number
     },
+    pickupAddress: String,
 
     dropLocation:{
         lat:Number,
         lng:Number
     },
+    dropAddress: String,
 
     packageDetails : {
         type : String
     },
     status:{
         type:String,
-        enum:["pending","assigned","picked","delivered"],
+        enum:["pending","assigned","picked","in-transit","delivered"],
         default:"pending"
     },
     pickupOtp : {
@@ -37,7 +39,11 @@ const orderSchema = new mongoose.Schema({
     deliverOtp: {
             type : String,
             select : false
-        }
+        },
+    fare: {
+        type: Number,
+        default: 0
+    }
 
 },{timestamps:true});
 

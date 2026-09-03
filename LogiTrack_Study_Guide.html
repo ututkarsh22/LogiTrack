@@ -1,0 +1,848 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LogiTrack — Study Guide</title>
+  <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap');
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      color: #1a1a2e;
+      background: #ffffff;
+      line-height: 1.7;
+      padding: 40px 60px;
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+
+    @media print {
+      body {
+        padding: 20px 30px;
+        font-size: 11px;
+      }
+
+      .no-print {
+        display: none !important;
+      }
+
+      .page-break {
+        page-break-before: always;
+      }
+
+      h2 {
+        page-break-after: avoid;
+      }
+
+      table,
+      pre {
+        page-break-inside: avoid;
+      }
+    }
+
+    h1 {
+      font-size: 2.4em;
+      font-weight: 800;
+      background: linear-gradient(135deg, #ea580c, #dc2626);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 8px;
+    }
+
+    .subtitle {
+      font-size: 1.1em;
+      color: #6b7280;
+      margin-bottom: 40px;
+      font-weight: 500;
+    }
+
+    h2 {
+      font-size: 1.5em;
+      font-weight: 700;
+      color: #0f172a;
+      margin-top: 40px;
+      margin-bottom: 16px;
+      padding-bottom: 8px;
+      border-bottom: 3px solid #ea580c;
+      display: inline-block;
+    }
+
+    h3 {
+      font-size: 1.2em;
+      font-weight: 700;
+      color: #1e293b;
+      margin-top: 28px;
+      margin-bottom: 10px;
+    }
+
+    h4 {
+      font-size: 1em;
+      font-weight: 600;
+      color: #334155;
+      margin-top: 20px;
+      margin-bottom: 8px;
+    }
+
+    p {
+      margin-bottom: 12px;
+      color: #374151;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 12px 0 20px 0;
+      font-size: 0.9em;
+    }
+
+    th {
+      background: #0f172a;
+      color: #fff;
+      padding: 10px 14px;
+      text-align: left;
+      font-weight: 600;
+      font-size: 0.85em;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    td {
+      padding: 10px 14px;
+      border-bottom: 1px solid #e5e7eb;
+      color: #374151;
+      vertical-align: top;
+    }
+
+    tr:nth-child(even) {
+      background: #f8fafc;
+    }
+
+    tr:hover {
+      background: #fff7ed;
+    }
+
+    code {
+      font-family: 'JetBrains Mono', monospace;
+      background: #f1f5f9;
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-size: 0.88em;
+      color: #dc2626;
+    }
+
+    pre {
+      background: #0f172a;
+      color: #e2e8f0;
+      padding: 20px;
+      border-radius: 12px;
+      overflow-x: auto;
+      margin: 12px 0 20px 0;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.85em;
+      line-height: 1.6;
+    }
+
+    pre code {
+      background: none;
+      color: inherit;
+      padding: 0;
+    }
+
+    .tip,
+    .note,
+    .important,
+    .warning {
+      padding: 14px 18px;
+      border-radius: 10px;
+      margin: 14px 0;
+      font-size: 0.92em;
+    }
+
+    .tip {
+      background: #f0fdf4;
+      border-left: 4px solid #22c55e;
+      color: #166534;
+    }
+
+    .note {
+      background: #eff6ff;
+      border-left: 4px solid #3b82f6;
+      color: #1e40af;
+    }
+
+    .important {
+      background: #fef3c7;
+      border-left: 4px solid #f59e0b;
+      color: #92400e;
+    }
+
+    .warning {
+      background: #fef2f2;
+      border-left: 4px solid #ef4444;
+      color: #991b1b;
+    }
+
+    .tip strong,
+    .note strong,
+    .important strong,
+    .warning strong {
+      display: block;
+      margin-bottom: 4px;
+    }
+
+    hr {
+      border: none;
+      height: 2px;
+      background: linear-gradient(to right, #ea580c, transparent);
+      margin: 30px 0;
+    }
+
+    .mermaid {
+      text-align: center;
+      margin: 20px 0;
+      background: #f8fafc;
+      padding: 20px;
+      border-radius: 12px;
+      border: 1px solid #e2e8f0;
+    }
+
+    .print-btn {
+      position: fixed;
+      bottom: 30px;
+      right: 30px;
+      background: #ea580c;
+      color: white;
+      border: none;
+      padding: 14px 28px;
+      border-radius: 12px;
+      font-size: 1em;
+      font-weight: 700;
+      cursor: pointer;
+      box-shadow: 0 8px 20px rgba(234, 88, 12, 0.3);
+      transition: all 0.2s;
+      font-family: 'Inter', sans-serif;
+      letter-spacing: 0.5px;
+    }
+
+    .print-btn:hover {
+      background: #c2410c;
+      transform: translateY(-2px);
+      box-shadow: 0 12px 24px rgba(234, 88, 12, 0.4);
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 6px;
+      font-size: 0.75em;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .badge-star {
+      background: #fef3c7;
+      color: #92400e;
+    }
+
+    .file-map {
+      color: #94a3b8;
+    }
+
+    .file-map .dir {
+      color: #f59e0b;
+      font-weight: 600;
+    }
+
+    .file-map .comment {
+      color: #64748b;
+    }
+  </style>
+</head>
+
+<body>
+
+  <h1>📚 LogiTrack — Study Guide</h1>
+  <p class="subtitle">A structured learning path through the full-stack logistics tracking application</p>
+
+  <!-- PRINT BUTTON -->
+  <button class="print-btn no-print" onclick="window.print()">📄 Save as PDF</button>
+
+  <h2>🏗️ Architecture Overview</h2>
+
+  <div class="mermaid">
+    graph TB
+    subgraph Frontend ["Frontend — React + Vite"]
+    APP["App.jsx — Router + Providers"]
+    AUTH_CTX["AuthContext.jsx — Login State"]
+    THEME_CTX["ThemeContext.jsx — Dark Mode"]
+    NAV["Navbar.jsx"]
+    LAND["Landing.jsx"]
+    LOGIN["Login.jsx"]
+    REG["Register.jsx"]
+    CUST["CustomerDashboard.jsx"]
+    AGENT["AgentDashboard.jsx"]
+    HIST["OrderHistory.jsx"]
+    AXIOS["api/axios.js — HTTP Client"]
+    end
+
+    subgraph Backend ["Backend — Express + MongoDB"]
+    SERVER["server.js — Entry Point"]
+    AUTH_MW["auth.middleware.js — JWT + Role Check"]
+    AUTH_R["authRoutes.js"]
+    ORD_R["orderRoute.js"]
+    AGT_R["agentRoutes.js"]
+    AUTH_C["authControllers.js"]
+    ORD_C["orderController.js"]
+    AGT_C["agentControllers.js"]
+    USER_M["User Model"]
+    AGENT_M["Agent Model"]
+    ORDER_M["Order Model"]
+    HIST_M["OrderHistory Model"]
+    DIST["distance.js — Haversine"]
+    GEO["getCoordinates.js — Geocoding"]
+    end
+
+    subgraph External ["External Services"]
+    MONGO[("MongoDB")]
+    NOMINATIM["Nominatim — Geocoding API"]
+    OSRM["OSRM — Route API"]
+    end
+
+    APP --> AUTH_CTX
+    APP --> THEME_CTX
+    APP --> NAV
+    APP --> CUST & AGENT & HIST & LOGIN & REG & LAND
+    CUST & AGENT & HIST & LOGIN & REG --> AXIOS
+    AXIOS -->|HTTP| SERVER
+    SERVER --> AUTH_R & ORD_R & AGT_R
+    AUTH_R --> AUTH_MW --> AUTH_C
+    ORD_R --> AUTH_MW --> ORD_C
+    AGT_R --> AUTH_MW --> AGT_C
+    AUTH_C --> USER_M & AGENT_M
+    ORD_C --> ORDER_M & GEO & DIST
+    AGT_C --> AGENT_M & ORDER_M & HIST_M & GEO & DIST
+    USER_M & AGENT_M & ORDER_M & HIST_M --> MONGO
+    GEO --> NOMINATIM
+    CUST & AGENT --> OSRM
+  </div>
+
+  <hr>
+
+  <h2>🔢 Recommended Study Sequence</h2>
+  <p>Read files in this exact order. Each layer builds on the previous one.</p>
+
+  <hr>
+
+  <h3>Phase 1: Backend Foundation</h3>
+  <p><strong>Goal:</strong> Understand how data is shaped and stored.</p>
+
+  <h4>Step 1 — Environment & Database Config</h4>
+  <table>
+    <tr>
+      <th>#</th>
+      <th>File</th>
+      <th>What to Focus On</th>
+    </tr>
+    <tr>
+      <td>1</td>
+      <td><code>.env</code></td>
+      <td>What env variables exist (PORT, MONGO_URI, JWT_SECRET, CORS_ORIGIN)</td>
+    </tr>
+    <tr>
+      <td>2</td>
+      <td><code>config/db.js</code></td>
+      <td>How MongoDB connects via Mongoose</td>
+    </tr>
+    <tr>
+      <td>3</td>
+      <td><code>config/dotenv.js</code></td>
+      <td>dotenv setup</td>
+    </tr>
+  </table>
+
+  <h4>Step 2 — Mongoose Models (Data Shapes)</h4>
+  <table>
+    <tr>
+      <th>#</th>
+      <th>File</th>
+      <th>What to Focus On</th>
+    </tr>
+    <tr>
+      <td>4</td>
+      <td><code>User.js</code></td>
+      <td><code>name, email, password, role (customer/agent)</code> — the base identity</td>
+    </tr>
+    <tr>
+      <td>5</td>
+      <td><code>Agent.model.js</code></td>
+      <td>Extends User via <code>ref: "User"</code>. Has <code>location {lat,lng}</code>, <code>isAvailable</code>,
+        <code>orderId</code></td>
+    </tr>
+    <tr>
+      <td>6</td>
+      <td><code>Order.js</code></td>
+      <td>The core order with pickup/drop coords, addresses, OTPs (select:false), fare, status enum</td>
+    </tr>
+    <tr>
+      <td>7</td>
+      <td><code>OrderHistory.js</code></td>
+      <td>Mirror of Order — data moves here after delivery. Has <code>deliveredAt</code> timestamp</td>
+    </tr>
+  </table>
+
+  <div class="tip">
+    <strong>💡 Key Pattern</strong>
+    Agent is a <em>separate document</em> linked to User via ObjectId, not a field on User. This 1:1 relationship lets
+    agents have location/availability without polluting the User model.
+  </div>
+
+  <h4>Step 3 — Utilities (Pure Logic)</h4>
+  <table>
+    <tr>
+      <th>#</th>
+      <th>File</th>
+      <th>What to Focus On</th>
+    </tr>
+    <tr>
+      <td>8</td>
+      <td><code>getCoordinates.js</code></td>
+      <td>Calls Nominatim (OpenStreetMap) to convert address string → <code>{lat, lng}</code></td>
+    </tr>
+    <tr>
+      <td>9</td>
+      <td><code>distance.js</code></td>
+      <td>Haversine formula — calculates distance between 2 lat/lng points in km</td>
+    </tr>
+  </table>
+
+  <div class="note">
+    <strong>📝 Note</strong>
+    These two utils are the backbone. Every order creation geocodes addresses and every fare calculation uses Haversine
+    distance.
+  </div>
+
+  <hr>
+  <div class="page-break"></div>
+
+  <h3>Phase 2: Backend Security & Routing</h3>
+  <p><strong>Goal:</strong> Understand request flow from HTTP → controller.</p>
+
+  <h4>Step 4 — Middleware (The Gatekeeper)</h4>
+  <table>
+    <tr>
+      <th>#</th>
+      <th>File</th>
+      <th>What to Focus On</th>
+    </tr>
+    <tr>
+      <td>10</td>
+      <td><code>auth.middleware.js</code></td>
+      <td>Three functions: <code>verifyToken</code> (JWT from cookie), <code>requireRole</code> (role-based access),
+        <code>verifyAdmin</code></td>
+    </tr>
+  </table>
+
+  <div class="important">
+    <strong>⚠️ Key Concept</strong>
+    Every protected route goes through <code>verifyToken</code> → <code>requireRole('customer'|'agent')</code>. The JWT
+    is stored in an <strong>httpOnly cookie</strong>, not localStorage. This is more secure against XSS.
+  </div>
+
+  <h4>Step 5 — Routes (URL → Controller Mapping)</h4>
+  <table>
+    <tr>
+      <th>#</th>
+      <th>File</th>
+      <th>What to Focus On</th>
+    </tr>
+    <tr>
+      <td>11</td>
+      <td><code>authRoutes.js</code></td>
+      <td><code>POST /register</code>, <code>POST /login</code>, <code>POST /logout</code>, <code>GET /verify</code>
+      </td>
+    </tr>
+    <tr>
+      <td>12</td>
+      <td><code>orderRoute.js</code></td>
+      <td>All customer-only: <code>GET /all-orders</code>, <code>POST /take-order</code>,
+        <code>POST /calculate-fare</code>, <code>GET /history</code></td>
+    </tr>
+    <tr>
+      <td>13</td>
+      <td><code>agentRoutes.js</code></td>
+      <td>All agent-only: <code>POST /location</code>, <code>GET /status</code>, <code>POST /verify-pickup-otp</code>,
+        <code>POST /verify-delivery-otp</code></td>
+    </tr>
+  </table>
+
+  <hr>
+
+  <h3>Phase 3: Backend Controllers (Business Logic)</h3>
+  <p><strong>Goal:</strong> Understand <em>what happens</em> when each API is called.</p>
+
+  <h4>Step 6 — Auth Controller</h4>
+  <table>
+    <tr>
+      <th>#</th>
+      <th>File</th>
+      <th>What to Focus On</th>
+    </tr>
+    <tr>
+      <td>14</td>
+      <td><code>authControllers.js</code></td>
+      <td><code>registerUser</code> — hashes password, creates User + Agent doc if role=agent. <code>loginUser</code> —
+        compares password, signs JWT, sets cookie. <code>verifyAuth</code> — validates session.</td>
+    </tr>
+  </table>
+
+  <h4>Step 7 — Order Controller <span class="badge badge-star">⭐ MOST IMPORTANT</span></h4>
+  <table>
+    <tr>
+      <th>#</th>
+      <th>File</th>
+      <th>What to Focus On</th>
+    </tr>
+    <tr>
+      <td>15</td>
+      <td><code>orderController.js</code></td>
+      <td>Study <code>createOrder</code> carefully — it geocodes → calculates fare → generates OTPs → creates order →
+        tries to auto-assign nearest agent within 10km. Also <code>calculateFare</code> for the estimate feature.</td>
+    </tr>
+  </table>
+
+  <div class="important">
+    <strong>⚠️ Atomic Assignment Pattern</strong>
+    When creating an order, the code uses <code>findOneAndUpdate</code> with <code>{ status: "pending" }</code>
+    condition. This prevents two agents from being assigned the same order simultaneously (race condition protection).
+  </div>
+
+  <h4>Step 8 — Agent Controller <span class="badge badge-star">⭐ KEY FILE</span></h4>
+  <table>
+    <tr>
+      <th>#</th>
+      <th>File</th>
+      <th>What to Focus On</th>
+    </tr>
+    <tr>
+      <td>16</td>
+      <td><code>agentControllers.js</code></td>
+      <td><code>agentLocation</code> — updates location AND tries to find pending orders within 10km.
+        <code>verifyPickupOtp</code> — changes status assigned→picked. <code>verifyDeliveryOtp</code> — moves order to
+        OrderHistory, frees the agent.</td>
+    </tr>
+  </table>
+
+  <div class="tip">
+    <strong>💡 Order Lifecycle</strong>
+    <code>pending</code> → <code>assigned</code> → <code>picked</code> → <code>in-transit</code> →
+    <code>delivered</code> (moved to OrderHistory).<br>
+    The <code>picked → in-transit</code> transition happens via a <strong>polling job</strong> in server.js, not via an
+    API call.
+  </div>
+
+  <hr>
+
+  <h3>Phase 4: Server Entry Point</h3>
+  <table>
+    <tr>
+      <th>#</th>
+      <th>File</th>
+      <th>What to Focus On</th>
+    </tr>
+    <tr>
+      <td>17</td>
+      <td><code>server.js</code></td>
+      <td>Ties everything together: CORS config, cookie parser, <strong>3 rate limiters</strong> (auth:20, orders:30,
+        agent:40 per 15min), route mounting, and the <strong>polling job</strong> that auto-transitions orders from
+        <code>picked</code> → <code>in-transit</code> after 5 minutes.</td>
+    </tr>
+  </table>
+
+  <hr>
+  <div class="page-break"></div>
+
+  <h3>Phase 5: Frontend Foundation</h3>
+  <p><strong>Goal:</strong> Understand how the React app is structured and how auth works.</p>
+
+  <h4>Step 9 — App Shell</h4>
+  <table>
+    <tr>
+      <th>#</th>
+      <th>File</th>
+      <th>What to Focus On</th>
+    </tr>
+    <tr>
+      <td>18</td>
+      <td><code>main.jsx</code></td>
+      <td>React entry point</td>
+    </tr>
+    <tr>
+      <td>19</td>
+      <td><code>api/axios.js</code></td>
+      <td>Axios instance with <code>baseURL</code>, <code>withCredentials:true</code> (sends cookies), 401 interceptor
+        auto-redirects to login</td>
+    </tr>
+    <tr>
+      <td>20</td>
+      <td><code>ThemeContext.jsx</code></td>
+      <td>Dark/light mode toggle via localStorage</td>
+    </tr>
+    <tr>
+      <td>21</td>
+      <td><code>AuthContext.jsx</code></td>
+      <td><code>login()</code>, <code>logout()</code>, session verification on mount, <code>useAuth()</code> hook</td>
+    </tr>
+    <tr>
+      <td>22</td>
+      <td><code>App.jsx</code></td>
+      <td><strong>Study the ProtectedRoute component</strong> — wraps routes with role checks. Routing structure:
+        <code>/customer/*</code> and <code>/agent/*</code></td>
+    </tr>
+  </table>
+
+  <h4>Step 10 — Shared Components</h4>
+  <table>
+    <tr>
+      <th>#</th>
+      <th>File</th>
+      <th>What to Focus On</th>
+    </tr>
+    <tr>
+      <td>23</td>
+      <td><code>Navbar.jsx</code></td>
+      <td>Conditional nav links based on role, logout button, theme toggle</td>
+    </tr>
+  </table>
+
+  <hr>
+
+  <h3>Phase 6: Frontend Pages</h3>
+  <p><strong>Goal:</strong> Understand each page's UI and how it talks to the backend.</p>
+
+  <table>
+    <tr>
+      <th>#</th>
+      <th>File</th>
+      <th>What to Focus On</th>
+    </tr>
+    <tr>
+      <td>24</td>
+      <td><code>Landing.jsx</code></td>
+      <td>Marketing page, no API calls</td>
+    </tr>
+    <tr>
+      <td>25</td>
+      <td><code>Register.jsx</code></td>
+      <td>Form → <code>POST /auth/register</code> → redirect to login</td>
+    </tr>
+    <tr>
+      <td>26</td>
+      <td><code>Login.jsx</code></td>
+      <td>Form → <code>POST /auth/login</code> → <code>AuthContext.login()</code> → redirect by role</td>
+    </tr>
+    <tr>
+      <td>27</td>
+      <td><code>CustomerDashboard.jsx</code> <span class="badge badge-star">⭐</span></td>
+      <td><strong>MOST COMPLEX PAGE.</strong> Order form, fare calculator, Leaflet map with OSRM route, order list with
+        OTP display. Study <code>MapController</code>, <code>RouteLayer</code> components and
+        <code>handleCreateOrder</code>.</td>
+    </tr>
+    <tr>
+      <td>28</td>
+      <td><code>OrderHistory.jsx</code></td>
+      <td>Grid/list view toggle, expandable order cards</td>
+    </tr>
+    <tr>
+      <td>29</td>
+      <td><code>AgentDashboard.jsx</code> <span class="badge badge-star">⭐</span></td>
+      <td>Two views: assigned order (map + sidebar with OTP forms) vs idle (location sync + scanning radar). Study
+        <code>updateLocation</code> and OTP verification flows.</td>
+    </tr>
+  </table>
+
+  <hr>
+  <div class="page-break"></div>
+
+  <h2>🔄 Data Flow Walkthroughs</h2>
+
+  <h3>Flow 1: Customer Places an Order</h3>
+
+  <div class="mermaid">
+    sequenceDiagram
+    participant C as Customer Browser
+    participant F as Frontend
+    participant B as Backend API
+    participant N as Nominatim
+    participant DB as MongoDB
+
+    C->>F: Fills pickup, drop, category - clicks BOOK NOW
+    F->>B: POST /orders/take-order
+    B->>N: getCoordinates pickupLocation
+    N-->>B: lat, lng
+    B->>N: getCoordinates dropLocation
+    N-->>B: lat, lng
+    B->>B: getDistance - fare = round distance x 10
+    B->>B: Generate pickupOtp + deliverOtp
+    B->>DB: Orders.create status pending
+    B->>DB: AgentModel.find isAvailable true
+    B->>B: Find nearest agent within 10km
+    alt Agent found
+    B->>DB: Order.findOneAndUpdate status assigned
+    B->>DB: Agent.isAvailable = false
+    end
+    B-->>F: success, order
+    F->>F: setSelectedOrder - Map shows route
+    F->>F: fetchOrders - Refresh list
+  </div>
+
+  <h3>Flow 2: Agent Delivers the Order</h3>
+
+  <div class="mermaid">
+    sequenceDiagram
+    participant A as Agent Browser
+    participant F as Frontend
+    participant B as Backend API
+    participant DB as MongoDB
+
+    A->>F: Syncs location GPS or text
+    F->>B: POST /agent/location
+    B->>DB: Agent.location = coords
+    B->>DB: Find pending orders within 10km
+    alt Order found
+    B->>DB: Atomic assign pending to assigned
+    B-->>F: assignedOrder
+    F->>F: Show map with pickup to drop route
+    end
+
+    Note over A,DB: At Pickup Point
+    A->>F: Enters 4-digit pickup OTP
+    F->>B: POST /agent/verify-pickup-otp
+    B->>DB: Verify OTP - status picked
+    B-->>F: success, order
+
+    Note over B,DB: After 5 minutes server polling job
+    B->>DB: status picked to in-transit
+
+    Note over A,DB: At Drop Point
+    A->>F: Enters 4-digit delivery OTP
+    F->>B: POST /agent/verify-delivery-otp
+    B->>DB: Create OrderHistory record with fare
+    B->>DB: Delete from Orders collection
+    B->>DB: Agent.isAvailable = true, orderId = null
+    B-->>F: success
+  </div>
+
+  <hr>
+  <div class="page-break"></div>
+
+  <h2>🧠 Key Concepts to Understand</h2>
+
+  <table>
+    <tr>
+      <th>Concept</th>
+      <th>Where It's Used</th>
+      <th>Why It Matters</th>
+    </tr>
+    <tr>
+      <td><strong>JWT in httpOnly Cookie</strong></td>
+      <td>auth.middleware.js, authControllers.js</td>
+      <td>More secure than localStorage — immune to XSS</td>
+    </tr>
+    <tr>
+      <td><strong>Role-Based Access</strong></td>
+      <td><code>requireRole('customer'|'agent')</code> in routes</td>
+      <td>Customers can't access agent APIs and vice versa</td>
+    </tr>
+    <tr>
+      <td><strong>Haversine Formula</strong></td>
+      <td>distance.js</td>
+      <td>Calculates "as the crow flies" distance between GPS coords</td>
+    </tr>
+    <tr>
+      <td><strong>Geocoding</strong></td>
+      <td>getCoordinates.js (Nominatim)</td>
+      <td>Converts "Connaught Place, Delhi" → <code>{lat: 28.63, lng: 77.21}</code></td>
+    </tr>
+    <tr>
+      <td><strong>OSRM Routing</strong></td>
+      <td>Frontend RouteLayer component</td>
+      <td>Fetches actual road route (not straight line) for map display</td>
+    </tr>
+    <tr>
+      <td><strong>Atomic DB Updates</strong></td>
+      <td><code>findOneAndUpdate({status:"pending"})</code></td>
+      <td>Prevents race conditions in order assignment</td>
+    </tr>
+    <tr>
+      <td><strong>OTP Dual Verification</strong></td>
+      <td>pickupOtp + deliverOtp</td>
+      <td>Ensures physical presence at both pickup and drop points</td>
+    </tr>
+    <tr>
+      <td><strong>Order Lifecycle</strong></td>
+      <td>Order → OrderHistory migration</td>
+      <td>Active orders live in <code>Orders</code> collection, delivered ones move to <code>OrderHistory</code></td>
+    </tr>
+    <tr>
+      <td><strong>Rate Limiting</strong></td>
+      <td>server.js (express-rate-limit)</td>
+      <td>Prevents API abuse: auth=20, orders=30, agent=40 per 15min</td>
+    </tr>
+    <tr>
+      <td><strong>Polling Job</strong></td>
+      <td>server.js setInterval</td>
+      <td>Auto-transitions <code>picked → in-transit</code> after 5 min</td>
+    </tr>
+  </table>
+
+  <hr>
+
+  <h2>📁 Quick File Map</h2>
+
+  <pre><code>LogiTrack/
+├── backend/
+│   ├── config/          ← DB connection, dotenv
+│   ├── models/          ← 4 Mongoose schemas (User, Agent, Order, OrderHistory)
+│   ├── middleware/       ← JWT verification + role checks
+│   ├── utils/           ← Haversine distance + Nominatim geocoding
+│   ├── controllers/     ← Business logic (auth, orders, agent)
+│   ├── routes/          ← URL → controller mapping
+│   └── server.js        ← Entry point, CORS, rate limits, polling job
+│
+└── frontend/
+    └── src/
+        ├── api/         ← Axios instance with interceptors
+        ├── context/     ← AuthContext (login state) + ThemeContext (dark mode)
+        ├── components/  ← Navbar
+        └── pages/       ← Landing, Login, Register, CustomerDashboard,
+                           AgentDashboard, OrderHistory</code></pre>
+
+  <div class="tip">
+    <strong>💡 Study Tip</strong>
+    After reading each backend controller, immediately open the corresponding frontend page that calls it. For example,
+    after reading <code>orderController.js</code>, open <code>CustomerDashboard.jsx</code> and trace the
+    <code>api.post('/orders/take-order', ...)</code> call to see the full round trip.
+  </div>
+
+  <script>
+    mermaid.initialize({
+      startOnLoad: true,
+      theme: 'neutral',
+      sequence: { mirrorActors: false },
+      flowchart: { htmlLabels: true, curve: 'basis' }
+    });
+  </script>
+
+</body>
+
+</html>
