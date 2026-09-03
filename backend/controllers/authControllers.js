@@ -2,7 +2,6 @@ import User from "../models/User.js";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import AgentModel from "../models/Agent.model.js";
-
 export const registerUser = async (req,res)=>{
 
     try{
@@ -15,7 +14,7 @@ export const registerUser = async (req,res)=>{
         
         if(password !== confirmPassword)
         {
-            return res.status(402).json({
+            return res.status(400).json({
                 success : false,
                 message : "Password are not same"
             })
@@ -57,7 +56,7 @@ export const registerUser = async (req,res)=>{
         });
 
     }catch(err){
-        res.status(501).json({
+        res.status(500).json({
             success : false,
             message : err.message
         })
@@ -77,7 +76,7 @@ export const loginUser = async(req, res) => {
              message : "All fields required",
          })
      }
-     const exist = await User.findOne({email});
+     let exist = await User.findOne({email});
  
      if(!exist){
          return res.status(401).json({
@@ -85,6 +84,12 @@ export const loginUser = async(req, res) => {
              message : "Invalid email"
          })
  
+     }
+
+     let agent = null;
+     if(exist.role === "agent")
+     {
+        agent = await AgentModel.findOne({user : exist._id});
      }
  
      const hashedPassword = await bcrypt.compare(password, exist.password);
@@ -96,7 +101,6 @@ export const loginUser = async(req, res) => {
              message : "Password is invalid"
          })
      }
- 
      const token = jwt.sign(
          {id: exist._id,role: exist.role},
          process.env.JWT_SECRET,
@@ -105,21 +109,46 @@ export const loginUser = async(req, res) => {
 
     res.cookie("token", token , {
         httpOnly : true,
-        secure : false,
+        secure : process.env.NODE_ENV === 'production',
+        sameSite : 'lax',
         maxAge : 24 * 60 * 60 * 1000
     })
- res.status(200).json({
-     success: true,
-     message:"login sucessful",
-     exist:{
-         id:exist._id,
-         name : exist.name,
-         email: exist.email,
-         role:exist.role
-     }
- });
+
+    if(exist.role === "agent")
+    {
+        return res.status(200).json({
+            success: true,
+            message:"login sucessful",
+            exist :{
+                id : exist._id,
+        name : exist.name,
+        email : exist.email,
+        role : exist.role,
+        
+    },
+    agent :{
+        isAvailable : agent.isAvailable,
+        orderId : agent.orderId
+    }
+    })
+    }
+    else{
+        return res.status(200).json({
+            success: true,
+            message:"login sucessful",
+            exist :{
+                id : exist._id,
+                name : exist.name,
+                email : exist.email,
+                role : exist.role,
+                
+            },
+        })
+    }
+   
+ 
  } catch (error) {
-    res.status(501).json({
+    res.status(500).json({
         success : false,
         message : `error from login ${error.message}`
     })
@@ -141,5 +170,25 @@ export const logoutUser = async(req,res) => {
             success : false,
             message : error.message
         })
+    }
+}
+
+export const verifyAuth = async(req, res) => {
+    try {
+        // req.user is populated by the verifyToken middleware
+        const user = await User.findById(req.user.id).select('-password');
+        if(!user) return res.status(401).json({ success: false, message: "User not found" });
+        
+        res.status(200).json({ 
+            success: true, 
+            user: { 
+                id: user._id, 
+                name: user.name, 
+                email: user.email, 
+                role: user.role 
+            } 
+        });
+    } catch (error) {
+        res.status(500).json({ success: false, message: error.message });
     }
 }
